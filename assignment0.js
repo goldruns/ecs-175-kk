@@ -47,17 +47,16 @@ class Shape
      */
     createVAO( gl, shader )
     {
-         // Create a vertex attribute object (VAO) and store it in 'this.vertex_array_object'
+         
          this.vertex_array_object = gl.createVertexArray();
          gl.bindVertexArray(this.vertex_array_object);
  
-         // Bind the VBO and link it to the shader attribute 'a_position'
+         
          gl.bindBuffer(gl.ARRAY_BUFFER, this.vertices_buffer);
          const positionLocation = gl.getAttribLocation(shader.program, 'a_position');
          gl.enableVertexAttribArray(positionLocation);
          gl.vertexAttribPointer(positionLocation, this.num_components, gl.FLOAT, false, 0, 0);
  
-         // Unbind buffers and clean up
          gl.bindVertexArray(null);
          gl.bindBuffer(gl.ARRAY_BUFFER, null);
     }
@@ -68,10 +67,9 @@ class Shape
      */
     createVBO( gl )
     {
-         // Create a vertex buffer (VBO) and store it in 'this.vertices_buffer'
+         
          this.vertices_buffer = gl.createBuffer();
          gl.bindBuffer(gl.ARRAY_BUFFER, this.vertices_buffer);
-         // Fill the buffer with data in 'this.vertices'
          gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
          gl.bindBuffer(gl.ARRAY_BUFFER, null);
     }
@@ -82,10 +80,8 @@ class Shape
      */
     createIBO( gl )
     {
-        // Create an index buffer object (IBO) and store it in 'this.index_buffer'
         this.index_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.index_buffer);
-        // Fill the buffer with data in 'this.indices' 
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), gl.STATIC_DRAW);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
     }
@@ -103,22 +99,19 @@ class Shape
      */
     render( gl )
     {
-        // Use the shader program
+        
         this.shader.use();
 
-        // Bind vertex array object
+        
         gl.bindVertexArray(this.vertex_array_object);
 
-        // Bind index buffer
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.index_buffer);
 
-        // Send uniform attributes for the shape's color
         this.shader.setUniform3f('u_color', this.color);
 
-        // Draw the element
         gl.drawElements(this.draw_mode, this.indices.length, gl.UNSIGNED_SHORT, 0);
 
-        // Clean Up
+        
         gl.bindVertexArray(null);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
     }
@@ -134,29 +127,25 @@ class Triangle extends Shape
 
     constructor( gl, shader, position, color, sideLength) 
     {
-        let cosangle = Math.cos(deg2rad(30)); // ≈ 0.8660
-        let sinangle = Math.sin(deg2rad(30)); // 0.5
+        let cosangle = Math.cos(deg2rad(30)); 
+        let sinangle = Math.sin(deg2rad(30)); 
 
-        // Center position
         let x0 = position[0];
         let y0 = position[1];
-
-        // Compute the horizontal and vertical offsets
         let x_offset = (sideLength / 2);
         let y_offset = sideLength * sinangle;
 
-        // Create a list of vertices defining the triangle
         let vertices = [
-            x0, y0 + y_offset, // Vertex at the top
+            x0, y0 + y_offset, 
 
-            x0 - x_offset, y0 - y_offset, // Left vertex
+            x0 - x_offset, y0 - y_offset, 
 
-            x0 + x_offset, y0 - y_offset, // Right vertex
+            x0 + x_offset, y0 - y_offset, 
         ];
             
         let indices = [0, 1, 2];
 
-        // Call the super constructor
+        
         super( gl, shader, vertices, indices, color, gl.TRIANGLES, indices.length );
     }
 
@@ -184,10 +173,9 @@ class WebGlApp
      */
     initGl( )
     {
-        // Get the canvas element and retrieve its webgl2 context 
         let canvas = document.getElementById('canvas');
         let gl = canvas.getContext('webgl2');
-        return gl;
+        return gl; 
     }
 
     /**
@@ -226,8 +214,8 @@ class WebGlApp
     {
         let color = hex2rgb('#FFBF00');
 
-        // Add a new Triangle shape to the list of shapes
         let triangle = new Triangle(gl, shader, position, color, sideLength);
+
         this.shapes.push(triangle);
     }
 
@@ -251,13 +239,10 @@ class WebGlApp
      */
     render( gl, canvas_width, canvas_height )
     {
-         // Set the viewport to span the full 'canvas_width' and 'canvas_height'
          this.setViewport(gl, canvas_width, canvas_height);
 
-         // Clear the active viewport with Aggie Blue
          this.clearCanvas(gl);
- 
-         // Loop through all shapes and render them
+
          for (let shape of this.shapes) {
              shape.render(gl);
          }
@@ -266,7 +251,6 @@ class WebGlApp
 }
 
 
-// JS Module Export -- No need to modify this
 export
 {
     Triangle,
